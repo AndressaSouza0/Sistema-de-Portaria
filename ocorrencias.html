@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ocorrências · Portaria do Galpão</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content">
+        <div class="page-header">
+          <div>
+            <h1>Ocorrências</h1>
+            <p>Registre avarias, atrasos, divergências e outros eventos</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Registrar Ocorrência</div>
+          <div id="ocorrenciaAlert" class="alert"></div>
+          <form id="ocorrenciaForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="tipoOcorrencia">Tipo</label>
+                <select id="tipoOcorrencia">
+                  <option value="avaria">Avaria</option>
+                  <option value="atraso">Atraso</option>
+                  <option value="divergencia">Divergência</option>
+                  <option value="seguranca">Segurança</option>
+                  <option value="acidente">Acidente</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="gravidade">Gravidade</label>
+                <select id="gravidade">
+                  <option value="baixa">Baixa</option>
+                  <option value="media" selected>Média</option>
+                  <option value="alta">Alta</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="placaOcorrencia">Placa relacionada</label>
+                <input type="text" id="placaOcorrencia" placeholder="ABC1D23" style="text-transform: uppercase" />
+              </div>
+              <div class="form-group">
+                <label for="visitaRelacionada">Veículo no pátio (hoje)</label>
+                <select id="visitaRelacionada">
+                  <option value="">Nenhum (não vinculado)</option>
+                </select>
+              </div>
+              <div class="form-group span-full">
+                <label for="descricao">Descrição *</label>
+                <textarea id="descricao" required placeholder="Descreva o que aconteceu"></textarea>
+              </div>
+              <div class="form-group span-full">
+                <label for="fotoOcorrencia">Foto (opcional)</label>
+                <input type="file" id="fotoOcorrencia" accept="image/*" capture="environment" />
+                <img id="fotoPreview" alt="Pré-visualização da foto" style="display: none; max-width: 200px; margin-top: 8px; border-radius: 8px; border: 1px solid var(--color-border);" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Registrar Ocorrência</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Ocorrências Registradas</div>
+
+          <div class="filters-bar">
+            <div class="form-group">
+              <label for="filtroDataInicio">De</label>
+              <input type="date" id="filtroDataInicio" />
+            </div>
+            <div class="form-group">
+              <label for="filtroDataFim">Até</label>
+              <input type="date" id="filtroDataFim" />
+            </div>
+            <div class="form-group">
+              <label for="filtroStatus">Status</label>
+              <select id="filtroStatus">
+                <option value="">Todos</option>
+                <option value="aberta">Aberta</option>
+                <option value="resolvida">Resolvida</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="filtroGravidade">Gravidade</label>
+              <select id="filtroGravidade">
+                <option value="">Todas</option>
+                <option value="baixa">Baixa</option>
+                <option value="media">Média</option>
+                <option value="alta">Alta</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="filtroTipo">Tipo</label>
+              <select id="filtroTipo">
+                <option value="">Todos</option>
+                <option value="avaria">Avaria</option>
+                <option value="atraso">Atraso</option>
+                <option value="divergencia">Divergência</option>
+                <option value="seguranca">Segurança</option>
+                <option value="acidente">Acidente</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <div style="display: flex; gap: 8px">
+                <button class="btn btn-primary" id="filtrar">Filtrar</button>
+                <button class="btn btn-secondary" id="limparFiltros">Limpar</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data/Hora</th>
+                  <th>Tipo</th>
+                  <th>Gravidade</th>
+                  <th>Descrição</th>
+                  <th>Placa</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="ocorrenciasBody">
+                <tr><td colspan="7" class="empty-state">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal de detalhes / resolucao -->
+  <div class="modal-overlay" id="detalheModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Detalhes da Ocorrência</h3>
+        <button class="modal-close" id="closeDetalheModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="detalheInfo"></div>
+
+        <div id="resolverSection" style="margin-top: 14px">
+          <div class="form-group">
+            <label for="resolucaoTexto">Resolução *</label>
+            <textarea id="resolucaoTexto" placeholder="Descreva como a ocorrência foi resolvida"></textarea>
+          </div>
+        </div>
+
+        <div id="resolvidaInfo" style="margin-top: 14px"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="cancelDetalhe">Fechar</button>
+        <button type="button" class="btn btn-secondary" id="reabrirBtn" style="display: none">Reabrir</button>
+        <button type="button" class="btn btn-success" id="resolverBtn" style="display: none">Marcar como Resolvida</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from './js/auth.js';
+    import { renderLayout } from './js/layout.js';
+    import { initOcorrencias } from './js/ocorrencias.js';
+
+    const auth = await requireAuth();
+    if (auth) {
+      renderLayout({ profile: auth.profile, active: 'ocorrencias', title: 'Ocorrências' });
+      initOcorrencias(auth);
+    }
+  </script>
+</body>
+</html>

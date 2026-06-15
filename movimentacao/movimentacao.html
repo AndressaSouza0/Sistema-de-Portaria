@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entrada / Saída · Portaria do Galpão</title>
+  <link rel="stylesheet" href="movimentacao.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content">
+        <div class="page-header">
+          <div>
+            <h1>Entrada / Saída de Caminhões</h1>
+            <p>Registre a chegada e a saída de veículos no pátio</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Registrar Entrada</div>
+          <div id="entradaAlert" class="alert"></div>
+          <form id="entradaForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="placa">Placa *</label>
+                <input type="text" id="placa" required placeholder="ABC1D23" style="text-transform: uppercase" />
+              </div>
+              <div class="form-group">
+                <label for="motoristaNome">Motorista</label>
+                <input type="text" id="motoristaNome" placeholder="Nome do motorista" />
+              </div>
+              <div class="form-group">
+                <label for="motoristaDoc">CPF do motorista</label>
+                <input type="text" id="motoristaDoc" placeholder="000.000.000-00" maxlength="14" />
+              </div>
+              <div class="form-group">
+                <label for="transportadora">Transportadora</label>
+                <input type="text" id="transportadora" list="transportadorasList" placeholder="Nome da transportadora" />
+                <datalist id="transportadorasList"></datalist>
+              </div>
+              <div class="form-group">
+                <label for="tipoOperacao">Tipo de operação</label>
+                <select id="tipoOperacao">
+                  <option value="entrega">Entrega</option>
+                  <option value="coleta">Coleta</option>
+                  <option value="devolucao">Devolução</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="documento">Nota fiscal / Pedido</label>
+                <input type="text" id="documento" placeholder="Número do documento" />
+              </div>
+              <div class="form-group">
+                <label for="doca">Doca</label>
+                <input type="text" id="doca" placeholder="Ex: Doca 3" />
+              </div>
+              <div class="form-group">
+                <label for="entregaVinculada">Vincular entrega esperada (hoje)</label>
+                <select id="entregaVinculada">
+                  <option value="">Nenhuma (não vinculado)</option>
+                </select>
+              </div>
+              <div class="form-group span-full">
+                <label for="observacoes">Observações</label>
+                <textarea id="observacoes" placeholder="Observações sobre a chegada do veículo"></textarea>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Registrar Entrada</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Caminhões no pátio</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Placa</th>
+                  <th>Motorista</th>
+                  <th>Transportadora</th>
+                  <th>Operação</th>
+                  <th>Documento</th>
+                  <th>Doca</th>
+                  <th>Entrada</th>
+                  <th>Tempo no pátio</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="patioBody">
+                <tr><td colspan="9" class="empty-state">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Histórico de hoje</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Placa</th>
+                  <th>Motorista</th>
+                  <th>Transportadora</th>
+                  <th>Operação</th>
+                  <th>Entrada</th>
+                  <th>Saída</th>
+                  <th>Permanência</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="historicoBody">
+                <tr><td colspan="8" class="empty-state">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal de registro de saída -->
+  <div class="modal-overlay" id="saidaModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Registrar Saída</h3>
+        <button class="modal-close" id="closeSaidaModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Confirmar saída do caminhão <strong id="saidaPlaca"></strong>?</p>
+        <div class="form-group">
+          <label for="saidaObs">Observações adicionais (opcional)</label>
+          <textarea id="saidaObs" placeholder="Ex: carga conferida, sem avarias"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelSaida">Cancelar</button>
+        <button class="btn btn-success" id="confirmSaida">Confirmar Saída</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '../shared/auth.js';
+    import { renderLayout } from '../shared/layout.js';
+    import { initMovimentacao } from './movimentacao.js';
+
+    const auth = await requireAuth();
+    if (auth) {
+      renderLayout({ profile: auth.profile, active: 'movimentacao', title: 'Entrada / Saída' });
+      initMovimentacao(auth);
+    }
+  </script>
+</body>
+</html>

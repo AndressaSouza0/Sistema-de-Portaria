@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bate-ponto · Portaria do Galpão</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content">
+        <div class="page-header">
+          <div>
+            <h1>Bate-ponto</h1>
+            <p>Registro de horários de funcionários e motoristas</p>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-button active" data-tab="funcionarios">Funcionários</button>
+          <button class="tab-button" data-tab="motoristas">Motoristas</button>
+        </div>
+
+        <!-- ===================== FUNCIONARIOS ===================== -->
+        <div class="tab-content active" id="tab-funcionarios">
+          <div class="card">
+            <div class="card-title">Bater Ponto - Funcionário</div>
+            <div id="funcionarioAlert" class="alert"></div>
+            <div class="form-grid">
+              <div class="form-group span-2">
+                <label for="funcionarioSelect">Funcionário</label>
+                <select id="funcionarioSelect"></select>
+              </div>
+              <div class="form-group span-2">
+                <label>Status</label>
+                <div id="funcionarioStatus" class="text-muted">-</div>
+              </div>
+              <div class="form-group span-full">
+                <label for="funcionarioObs">Observações (opcional)</label>
+                <textarea id="funcionarioObs" placeholder="Ex: chegou atrasado por trânsito"></textarea>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-success" data-ponto-tipo="entrada">Entrada</button>
+              <button type="button" class="btn btn-secondary" data-ponto-tipo="pausa_inicio">Início Pausa</button>
+              <button type="button" class="btn btn-secondary" data-ponto-tipo="pausa_fim">Fim Pausa</button>
+              <button type="button" class="btn btn-danger" data-ponto-tipo="saida">Saída</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Histórico - Funcionários</div>
+            <div class="filters-bar">
+              <div class="form-group">
+                <label for="filtroDataFuncionarios">Data</label>
+                <input type="date" id="filtroDataFuncionarios" />
+              </div>
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-primary" id="filtrarFuncionarios">Filtrar</button>
+              </div>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Funcionário</th>
+                    <th>Tipo</th>
+                    <th>Data/Hora</th>
+                    <th>Observações</th>
+                  </tr>
+                </thead>
+                <tbody id="historicoFuncionariosBody">
+                  <tr><td colspan="4" class="empty-state">Carregando...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================== MOTORISTAS ===================== -->
+        <div class="tab-content" id="tab-motoristas">
+          <div class="card">
+            <div class="card-title">Bater Ponto - Motorista</div>
+            <div id="motoristaAlert" class="alert"></div>
+            <form id="motoristaForm">
+              <div class="form-grid">
+                <div class="form-group span-2">
+                  <label for="veiculoPatioSelect">Veículo no pátio</label>
+                  <select id="veiculoPatioSelect"></select>
+                </div>
+                <div class="form-group">
+                  <label for="motoristaNomePonto">Nome do motorista</label>
+                  <input type="text" id="motoristaNomePonto" placeholder="Nome completo" />
+                </div>
+                <div class="form-group">
+                  <label for="motoristaDocPonto">CPF do motorista</label>
+                  <input type="text" id="motoristaDocPonto" placeholder="000.000.000-00" />
+                </div>
+                <div class="form-group">
+                  <label for="tipoPontoMotorista">Tipo de registro</label>
+                  <select id="tipoPontoMotorista">
+                    <option value="entrada">Entrada</option>
+                    <option value="pausa_inicio">Início Pausa</option>
+                    <option value="pausa_fim">Fim Pausa</option>
+                    <option value="saida">Saída</option>
+                  </select>
+                </div>
+                <div class="form-group span-full">
+                  <label for="motoristaObs">Observações (opcional)</label>
+                  <textarea id="motoristaObs" placeholder="Observações"></textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Registrar Ponto</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Histórico - Motoristas</div>
+            <div class="filters-bar">
+              <div class="form-group">
+                <label for="filtroDataMotoristas">Data</label>
+                <input type="date" id="filtroDataMotoristas" />
+              </div>
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-primary" id="filtrarMotoristas">Filtrar</button>
+              </div>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Motorista</th>
+                    <th>Documento</th>
+                    <th>Placa</th>
+                    <th>Tipo</th>
+                    <th>Data/Hora</th>
+                  </tr>
+                </thead>
+                <tbody id="historicoMotoristasBody">
+                  <tr><td colspan="5" class="empty-state">Carregando...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from './js/auth.js';
+    import { renderLayout } from './js/layout.js';
+    import { initPonto } from './js/ponto.js';
+
+    const auth = await requireAuth();
+    if (auth) {
+      renderLayout({ profile: auth.profile, active: 'ponto', title: 'Bate-ponto' });
+      initPonto(auth);
+    }
+  </script>
+</body>
+</html>

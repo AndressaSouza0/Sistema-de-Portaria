@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entregas Esperadas · Portaria do Galpão</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content">
+        <div class="page-header">
+          <div>
+            <h1>Entregas / Coletas Esperadas</h1>
+            <p>Cadastre e acompanhe as cargas previstas para o galpão</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Nova Entrega / Coleta</div>
+          <div id="entregaAlert" class="alert"></div>
+          <form id="entregaForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="dataPrevista">Data prevista *</label>
+                <input type="date" id="dataPrevista" required />
+              </div>
+              <div class="form-group">
+                <label for="horaPrevista">Hora prevista</label>
+                <input type="time" id="horaPrevista" />
+              </div>
+              <div class="form-group">
+                <label for="tipo">Tipo</label>
+                <select id="tipo">
+                  <option value="entrega">Entrega</option>
+                  <option value="coleta">Coleta</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="transportadoraEntrega">Transportadora</label>
+                <input type="text" id="transportadoraEntrega" list="transportadorasListEntregas" placeholder="Nome da transportadora" />
+                <datalist id="transportadorasListEntregas"></datalist>
+              </div>
+              <div class="form-group">
+                <label for="placaPrevista">Placa prevista</label>
+                <input type="text" id="placaPrevista" placeholder="ABC1D23" style="text-transform: uppercase" />
+              </div>
+              <div class="form-group">
+                <label for="documentoEntrega">Nota fiscal / Pedido</label>
+                <input type="text" id="documentoEntrega" placeholder="Número do documento" />
+              </div>
+              <div class="form-group span-2">
+                <label for="fornecedorCliente">Fornecedor / Cliente</label>
+                <input type="text" id="fornecedorCliente" placeholder="Nome do fornecedor ou cliente" />
+              </div>
+              <div class="form-group span-full">
+                <label for="observacoesEntrega">Observações</label>
+                <textarea id="observacoesEntrega" placeholder="Informações adicionais"></textarea>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Cadastrar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Entregas / Coletas</div>
+
+          <div class="filters-bar">
+            <div class="form-group">
+              <label for="filtroDataInicio">De</label>
+              <input type="date" id="filtroDataInicio" />
+            </div>
+            <div class="form-group">
+              <label for="filtroDataFim">Até</label>
+              <input type="date" id="filtroDataFim" />
+            </div>
+            <div class="form-group">
+              <label for="filtroStatus">Status</label>
+              <select id="filtroStatus">
+                <option value="">Todos</option>
+                <option value="pendente">Pendente</option>
+                <option value="em_andamento">Em andamento</option>
+                <option value="concluida">Concluída</option>
+                <option value="atrasada">Atrasada</option>
+                <option value="cancelada">Cancelada</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="filtroTipo">Tipo</label>
+              <select id="filtroTipo">
+                <option value="">Todos</option>
+                <option value="entrega">Entrega</option>
+                <option value="coleta">Coleta</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <div style="display: flex; gap: 8px">
+                <button class="btn btn-primary" id="filtrar">Filtrar</button>
+                <button class="btn btn-secondary" id="limparFiltros">Limpar</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Hora</th>
+                  <th>Tipo</th>
+                  <th>Transportadora</th>
+                  <th>Placa prevista</th>
+                  <th>Documento</th>
+                  <th>Fornecedor / Cliente</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="entregasBody">
+                <tr><td colspan="9" class="empty-state">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal de edicao -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Editar Entrega / Coleta</h3>
+        <button class="modal-close" id="closeEditModal">&times;</button>
+      </div>
+      <form id="editForm">
+        <div class="modal-body">
+          <div id="editAlert" class="alert"></div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="editDataPrevista">Data prevista *</label>
+              <input type="date" id="editDataPrevista" required />
+            </div>
+            <div class="form-group">
+              <label for="editHoraPrevista">Hora prevista</label>
+              <input type="time" id="editHoraPrevista" />
+            </div>
+            <div class="form-group">
+              <label for="editTipo">Tipo</label>
+              <select id="editTipo">
+                <option value="entrega">Entrega</option>
+                <option value="coleta">Coleta</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="editStatus">Status</label>
+              <select id="editStatus">
+                <option value="pendente">Pendente</option>
+                <option value="em_andamento">Em andamento</option>
+                <option value="concluida">Concluída</option>
+                <option value="atrasada">Atrasada</option>
+                <option value="cancelada">Cancelada</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="editTransportadora">Transportadora</label>
+              <input type="text" id="editTransportadora" />
+            </div>
+            <div class="form-group">
+              <label for="editPlacaPrevista">Placa prevista</label>
+              <input type="text" id="editPlacaPrevista" style="text-transform: uppercase" />
+            </div>
+            <div class="form-group span-2">
+              <label for="editDocumento">Nota fiscal / Pedido</label>
+              <input type="text" id="editDocumento" />
+            </div>
+            <div class="form-group span-2">
+              <label for="editFornecedorCliente">Fornecedor / Cliente</label>
+              <input type="text" id="editFornecedorCliente" />
+            </div>
+            <div class="form-group span-full">
+              <label for="editObservacoes">Observações</label>
+              <textarea id="editObservacoes"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="deleteEntrega" style="margin-right: auto">Excluir</button>
+          <button type="button" class="btn btn-secondary" id="cancelEdit">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from './js/auth.js';
+    import { renderLayout } from './js/layout.js';
+    import { initEntregas } from './js/entregas.js';
+
+    const auth = await requireAuth();
+    if (auth) {
+      renderLayout({ profile: auth.profile, active: 'entregas', title: 'Entregas Esperadas' });
+      initEntregas(auth);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login · Portaria do Galpão</title>
+  <link rel="stylesheet" href="login.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+</head>
+<body class="login-page">
+  <div class="login-card">
+    <div class="login-logo"><i class="bi bi-building"></i></div>
+    <h1>Portaria do Galpão</h1>
+    <p class="subtitle">Controle de acesso e operações do galpão</p>
+
+    <div class="tabs login-tabs">
+      <button type="button" class="tab-button active" data-tab="login">Entrar</button>
+      <button type="button" class="tab-button" data-tab="ponto">Bater Ponto</button>
+    </div>
+
+    <div id="alertBox" class="alert"></div>
+
+    <div class="tab-content active" data-tab-content="login">
+      <div id="loginView">
+        <form id="loginForm" novalidate>
+          <div class="form-group">
+            <label for="loginEmail">E-mail</label>
+            <div class="input-icon-wrapper">
+              <i class="bi bi-envelope input-icon"></i>
+              <input
+                type="email"
+                id="loginEmail"
+                required
+                autocomplete="email"
+                placeholder="seuemail@empresa.com"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Senha</label>
+            <div class="password-wrapper">
+              <i class="bi bi-lock input-icon"></i>
+              <input
+                type="password"
+                id="loginPassword"
+                required
+                autocomplete="current-password"
+                placeholder="••••••••"
+                minlength="6"
+              />
+              <button type="button" class="toggle-password" data-target="loginPassword" aria-label="Mostrar senha" tabindex="-1">
+                <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="icon-eye-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-6.06"/><path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.77 21.77 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="loginSubmitBtn">Entrar</button>
+        </form>
+        <p class="auth-switch">Não tem uma conta? <a href="#" id="showSignup">Criar cadastro</a></p>
+      </div>
+
+      <div id="signupView" class="hidden">
+        <form id="signupForm" novalidate>
+          <div class="form-group">
+            <label for="signupNome">Nome</label>
+            <div class="input-icon-wrapper">
+              <i class="bi bi-person input-icon"></i>
+              <input
+                type="text"
+                id="signupNome"
+                required
+                autocomplete="name"
+                placeholder="Seu nome completo"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="signupEmail">E-mail</label>
+            <div class="input-icon-wrapper">
+              <i class="bi bi-envelope input-icon"></i>
+              <input
+                type="email"
+                id="signupEmail"
+                required
+                autocomplete="email"
+                placeholder="seuemail@empresa.com"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="signupPassword">Senha</label>
+            <div class="password-wrapper">
+              <i class="bi bi-lock input-icon"></i>
+              <input
+                type="password"
+                id="signupPassword"
+                required
+                autocomplete="new-password"
+                placeholder="••••••••"
+                minlength="6"
+              />
+              <button type="button" class="toggle-password" data-target="signupPassword" aria-label="Mostrar senha" tabindex="-1">
+                <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="icon-eye-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-6.06"/><path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a21.77 21.77 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="signupSubmitBtn">Criar conta</button>
+        </form>
+        <p class="auth-switch">Já tem uma conta? <a href="#" id="showLogin">Entrar</a></p>
+      </div>
+    </div>
+
+    <div class="tab-content" data-tab-content="ponto">
+      <div id="pontoAlert" class="alert"></div>
+      <div class="form-group">
+        <label for="pontoFuncionarioSelect">Funcionário</label>
+        <select id="pontoFuncionarioSelect"></select>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <div id="pontoFuncionarioStatus" class="text-muted">-</div>
+      </div>
+      <div class="form-group">
+        <label for="pontoObs">Observações (opcional)</label>
+        <textarea id="pontoObs" placeholder="Ex: chegou atrasado por trânsito"></textarea>
+      </div>
+      <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 8px;">
+        <button type="button" class="btn btn-success" data-ponto-tipo="entrada">Entrada</button>
+        <button type="button" class="btn btn-secondary" data-ponto-tipo="pausa_inicio">Início Pausa</button>
+        <button type="button" class="btn btn-secondary" data-ponto-tipo="pausa_fim">Fim Pausa</button>
+        <button type="button" class="btn btn-danger" data-ponto-tipo="saida">Saída</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="login.js"></script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relatórios · Portaria do Galpão</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content">
+        <div class="page-header">
+          <div>
+            <h1>Relatórios</h1>
+            <p>Movimentações, ocorrências e bate-ponto por período</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="filters-bar" style="margin-bottom: 0">
+            <div class="form-group">
+              <label for="relDataInicio">De</label>
+              <input type="date" id="relDataInicio" />
+            </div>
+            <div class="form-group">
+              <label for="relDataFim">Até</label>
+              <input type="date" id="relDataFim" />
+            </div>
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <button class="btn btn-primary" id="gerarRelatorio">Gerar Relatório</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-button active" data-tab="movimentacoes">Movimentações</button>
+          <button class="tab-button" data-tab="ocorrencias">Ocorrências</button>
+          <button class="tab-button" data-tab="ponto">Bate-ponto</button>
+          <button class="tab-button" data-tab="diario">Relatório Diário</button>
+        </div>
+
+        <!-- ===================== MOVIMENTACOES ===================== -->
+        <div class="tab-content active" id="tab-movimentacoes">
+          <div class="cards-grid" id="movStats"></div>
+
+          <div class="chart-card">
+            <div class="card-title">Movimentações por dia</div>
+            <canvas id="chartMovPeriodo"></canvas>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              Movimentações no período
+              <button class="btn btn-secondary btn-sm" id="exportMov">Exportar CSV</button>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Placa</th>
+                    <th>Motorista</th>
+                    <th>Transportadora</th>
+                    <th>Operação</th>
+                    <th>Entrada</th>
+                    <th>Saída</th>
+                    <th>Permanência</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="movBody">
+                  <tr><td colspan="8" class="empty-state">Carregando...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================== OCORRENCIAS ===================== -->
+        <div class="tab-content" id="tab-ocorrencias">
+          <div class="cards-grid" id="ocorrStats"></div>
+
+          <div class="chart-card">
+            <div class="card-title">Ocorrências por tipo</div>
+            <canvas id="chartOcorrPeriodo"></canvas>
+          </div>
+
+          <div class="card">
+            <div class="card-title">
+              Ocorrências no período
+              <button class="btn btn-secondary btn-sm" id="exportOcorr">Exportar CSV</button>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Data/Hora</th>
+                    <th>Tipo</th>
+                    <th>Gravidade</th>
+                    <th>Descrição</th>
+                    <th>Placa</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="ocorrBody">
+                  <tr><td colspan="6" class="empty-state">Carregando...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================== BATE-PONTO ===================== -->
+        <div class="tab-content" id="tab-ponto">
+          <div class="card">
+            <div class="card-title">
+              Horas trabalhadas por funcionário
+              <button class="btn btn-secondary btn-sm" id="exportPonto">Exportar CSV</button>
+            </div>
+            <p class="text-muted">
+              Calculado a partir dos pares de Entrada/Saída e descontando os intervalos de pausa
+              registrados no período selecionado.
+            </p>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Funcionário</th>
+                    <th>Dias com registro</th>
+                    <th>Total de horas</th>
+                  </tr>
+                </thead>
+                <tbody id="pontoBody">
+                  <tr><td colspan="3" class="empty-state">Carregando...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================== RELATORIO DIARIO ===================== -->
+        <div class="tab-content" id="tab-diario">
+          <div class="card no-print">
+            <div class="filters-bar" style="margin-bottom: 0">
+              <div class="form-group">
+                <label for="diarioData">Data</label>
+                <input type="date" id="diarioData" />
+              </div>
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-primary" id="gerarDiario">Gerar Relatório</button>
+              </div>
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-secondary" id="imprimirDiario">
+                  <i class="bi bi-printer"></i> Imprimir / Salvar PDF
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="report-sheet" id="relatorioDiario"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from './js/auth.js';
+    import { renderLayout } from './js/layout.js';
+    import { initRelatorios } from './js/relatorios.js';
+
+    const auth = await requireAuth();
+    if (auth) {
+      renderLayout({ profile: auth.profile, active: 'relatorios', title: 'Relatórios' });
+      initRelatorios(auth.profile);
+    }
+  </script>
+</body>
+</html>

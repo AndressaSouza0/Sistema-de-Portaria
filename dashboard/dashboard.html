@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard · Portaria do Galpão</title>
+  <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="main">
+      <header class="topbar" id="topbar"></header>
+      <main class="content">
+        <div class="page-header">
+          <div>
+            <h1>Dashboard</h1>
+            <p>Visão geral das operações de hoje</p>
+          </div>
+        </div>
+
+        <div class="cards-grid" id="statsCards">
+          <div class="stat-card"><div class="stat-label">Carregando...</div></div>
+        </div>
+
+        <div class="charts-grid">
+          <div class="chart-card">
+            <div class="card-title">Movimentações - últimos 7 dias</div>
+            <canvas id="chartMovimentacoes"></canvas>
+          </div>
+          <div class="chart-card">
+            <div class="card-title">Ocorrências por tipo (30 dias)</div>
+            <canvas id="chartOcorrencias"></canvas>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Entregas / coletas esperadas hoje</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Hora</th>
+                  <th>Tipo</th>
+                  <th>Transportadora</th>
+                  <th>Placa prevista</th>
+                  <th>Documento</th>
+                  <th>Fornecedor / Cliente</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="entregasHojeBody">
+                <tr><td colspan="7" class="empty-state">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Caminhões no pátio agora</div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Placa</th>
+                  <th>Motorista</th>
+                  <th>Transportadora</th>
+                  <th>Operação</th>
+                  <th>Doca</th>
+                  <th>Entrada</th>
+                  <th>Tempo no pátio</th>
+                </tr>
+              </thead>
+              <tbody id="patioBody">
+                <tr><td colspan="7" class="empty-state">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '../shared/auth.js';
+    import { renderLayout } from '../shared/layout.js';
+    import { initDashboard } from './dashboard.js';
+
+    const auth = await requireAuth();
+    if (auth) {
+      renderLayout({ profile: auth.profile, active: 'dashboard', title: 'Dashboard' });
+      initDashboard();
+    }
+  </script>
+</body>
+</html>
